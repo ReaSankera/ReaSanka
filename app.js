@@ -172,7 +172,7 @@ client.on("message", async message => {
     if(!member)
       return message.reply("Please mention a valid member of this server");
     if(!member.kickable) 
-      return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
+      return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
     
     // slice(1) removes the first part, which here should be the user mention!
     let reason = args.slice(1).join(' ');
@@ -181,8 +181,8 @@ client.on("message", async message => {
     
     // Now, time for a swift kick in the nuts!
     await member.ban(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-    message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
+      .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+    message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
   }
 });
 //Commands
