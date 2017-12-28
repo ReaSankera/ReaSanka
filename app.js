@@ -163,6 +163,7 @@ client.on("message", async message => {
   if(command === "ass") {
   
     if(message.author.id !== config.ownerID) 
+     if(message.author.id !== config.zaniID) 
       return message.reply("Sorry, your not the bot owner");
     
     // Let's first check if we have a member and if we can kick them!
