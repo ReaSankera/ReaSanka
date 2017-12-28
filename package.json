@@ -1,0 +1,16 @@
+{
+  "name": "quote",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rea Sanka",
+  "license": "ISC",
+  "dependencies": {
+    "discord-anti-spam": "^1.1.1",
+    "discord.js": "^11.2.1",
+    "discord.js-commando": "^0.9.0"
+  }
+}
