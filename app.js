@@ -1,38 +1,40 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
+const package = require("./package.json");
+const image = require("./image.json")
+const updates = require("./updates.json")
 
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
-  console.log(`Bot launched....`); 
+  console.log(`Bot launched.... with ${client.guilds.size} servers and with ${client.users.size} user`); 
   // Example of changing the bot's playing game to something useful. `client.user` is what the
   // docs refer to as the "ClientUser".
-  client.user.setGame(`Type !!help | Guilds: ${client.guilds.size} | User: ${client.users.size}`);
+  client.user.setGame(`Type !!helpah | Server: ${client.guilds.size} | User: ${client.users.size}`);
   //Sets username on all servers
   client.user.setUsername(config.username);
 });
 
 // Set the bot's online/idle/dnd/invisible status
 client.on("ready", () => {
-    client.user.setStatus("online");
+    client.user.setStatus("dnd");
 });
 
 client.on("guildCreate", guild => {
   // This event triggers when the bot joins a guild.
   console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-  client.user.setGame(`Type !!help | Guilds: ${client.guilds.size} | User: ${client.users.size}`);
+  client.user.setGame(`Type !!helpah | Server: ${client.guilds.size} | User: ${client.users.size}`);
 });
 
 client.on("guildDelete", guild => {
   // this event triggers when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-  client.user.setGame(`Type !!help | Guilds: ${client.guilds.size} | User: ${client.users.size}`);
+  client.user.setGame(`Type !!helpah | Server: ${client.guilds.size} | User: ${client.users.size}`);
 });
 
 
 client.on("message", async message => {
-  // This event will run on every single message received, from any channel or DM.
-  
+  // This event will run on every single message received, from any channel or DM.  
   // It's good practice to ignore other bots. This also makes your bot ignore itself
   // and not get into a spam loop (we call that "botception").
   if(message.author.bot) return;
@@ -138,8 +140,8 @@ client.on("message", async message => {
   if(command === "pussy") {
   
     if(message.author.id !== config.ownerID) 
-    if(message.author.id !== config.zaniID) 
-      return message.reply("Sorry, you're not the bot owner or co-owner");
+    if(message.author.id !== config.zaniID)
+      return message.reply("Sorry, not for people like you :p ");
     
     // Let's first check if we have a member and if we can kick them!
     // message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
@@ -161,42 +163,44 @@ client.on("message", async message => {
   } 
   //Ban
   if(command === "ass") {
-  
     if(message.author.id !== config.ownerID) 
-     if(message.author.id !== config.zaniID) 
-      return message.reply("Sorry, your not the bot owner");
+    if(message.author.id !== config.zaniID) 
+        return message.reply("Sorry, not for people like you :p ");
+      
+      let member = message.mentions.members.first();
+      if(!member)
+        return message.reply("Please mention a valid member of this server");
+      if(!member.bannable) 
+        return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
+  
+      let reason = args.slice(1).join(' ');
+      if(!reason)
+        return message.reply("Please indicate a reason for the ban!");
+      
+      await member.ban(reason)
+        .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+      message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
+  }
+  if  (message.content.startsWith(config.prefix + "owner")) {
     
-    // Let's first check if we have a member and if we can kick them!
-    // message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
-    let member = message.mentions.members.first();
-    if(!member)
-      return message.reply("Please mention a valid member of this server");
-    if(!member.kickable) 
-      return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
-    
-    // slice(1) removes the first part, which here should be the user mention!
-    let reason = args.slice(1).join(' ');
-    if(!reason)
-      return message.reply("Please indicate a reason for the kick!");
-    
-    // Now, time for a swift kick in the nuts!
-    await member.ban(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
-    message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
+    if(message.author.id !== config.ownerID) 
+    return message.reply("Sorry, not for people like you :p ");
+
+    message.channel.send(updates.updateowner)
   }
 });
 //Commands
 client.on("message", (message) => {
   if (!message.content.startsWith(config.prefix) || message.author.bot) return;
 
-  if (message.content.startsWith(config.prefix + "help")) {
-    message.channel.send(`This is  a coustom made bot with not many options at the moment but it will all comming soon.Type "!!commands" for the commands with prefix and without prefix "commands" be sure to check "!!update"`);
+  if (message.content.startsWith(config.prefix + "helpah")) {
+    message.channel.send(`This is fun bot and not more bot.More options will be added soon.Type "!!commands" for the commands with prefix, be sure to check "!!update"`);
   } else
   if (message.content.startsWith(config.prefix + "inv")) {
     message.channel.send("My invite linke so you can add me on your server :heart: https://discordapp.com/oauth2/authorize?client_id=393920096860635136&scope=bot&permissions=1 .My invite linke to my server :purple_heart:  https://discord.gg/f3cdMz5");
   } else
   if (message.content.startsWith(config.prefix + "commands")) {
-    message.channel.send("Commands with prefix:help,report,inv,ping,say,kick,ban,purge,guilds,pat, ........These commands without prefix:prefix,info,Hentai,Good Morning,Alex,Heil Alex,ly,Haywood,Magey Mage");
+    message.channel.send("Commands with prefix:help,report,inv,ping,say,kick,ban,purge,guilds,pat,kiss,slap,butts,lewd,fuck,life,kill");
   } else
     if (message.content.startsWith(config.prefix + "guilds")) {
       message.channel.send(`The bot sees ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
@@ -205,17 +209,147 @@ client.on("message", (message) => {
     message.channel.send("If you have something to report, write it my owner ReaSanka#6146 (just dm the owner if you see something is not working or any grammer mistakes)")
   } else 
   if  (message.content.startsWith(config.prefix + "update")) {
-    message.channel.send(config.update)
+    message.channel.send(updates.update)
   } else 
   if (message.content.startsWith(config.prefix + "pat")) {
   
     let member = message.mentions.members.first();
     if(!member)
-      return message.reply("Please mention a valid member of this server");
+      return message.reply("you cant pat yourself do you?(please mention someone)");
      
 
-       message.channel.send(config.pat + member.user.tag);
+       message.channel.send(config.pat +  member.user.tag + image.pat);
   }
+  if (message.content.startsWith(config.prefix + "butts")) {
+
+    return message.reply(image.butts)
+  }
+  if (message.content.startsWith(config.prefix + "kiss")) {
+  
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant kiss yourself do you?(please mention someone)");
+     
+
+       message.channel.send(message.author + config.kiss +  member.user.tag + image.kiss);
+  }
+  if (message.content.startsWith(config.prefix + "slap")) {
+  
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant slap yourself do you?(please mention someone)");
+     
+
+       message.channel.send(message.author + config.slap +  member.user.tag + image.slap);
+  }
+
+  if (message.content.startsWith(config.prefix + "lewd")) {
+
+    return message.reply(config.lewd + image.lewd)
+  }
+
+  if (message.content.startsWith(config.prefix + "life")) {
+
+    return message.reply(config.life + image.life)
+  }
+
+  if (message.content.startsWith(config.prefix + "fuck")) {
+
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant fuck yourself do you?(please mention someone)");
+
+    return message.reply(config.fuck + member.user.tag + image.fuck)
+  }
+
+  if (message.content.startsWith(config.prefix + "dickslap")) {
+
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant dickslap yourself do you?(please mention someone)");
+
+    return message.reply("*gives* " + member.user.tag + config.dickslap  + image.dickslap + " (i dont know why i even made this) " )
+  }
+  if (message.content.startsWith(config.prefix + "kill")) {
+
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you can kill yourself?(please mention someone)");
+
+    return message.reply(config.kill  + member.user.tag + image.kill)
+  }
+  if (message.content.startsWith(config.prefix + "rape")) {
+
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant rape yourself do you???(please mention someone)");
+
+    return message.reply(config.rape  + member.user.tag + image.rape+ " (this i actually a gif from a hentai :shrug: )")
+  }
+  if (message.content.startsWith(config.prefix + "cry")) {
+
+    return message.reply(config.cry + image.cry)
+  }
+//Help commands
+if (message.content.startsWith(config.prefix + "help inv")) {
+  message.channel.send("with inv you get an inv link from me and my server :smile: ");
+} else
+if (message.content.startsWith(config.prefix + "help commands")) {
+  message.channel.send("with commands you see how many commands i have :3 ");
+} else
+  if (message.content.startsWith(config.prefix + "help guilds")) {
+    message.channel.send(`this shows how many channel,user is see and i how many server i got invited`);
+} else
+if (message.content.startsWith(config.prefix + "help report")) {
+  message.channel.send("this will give you my owners discord name if i am drunk")
+} else 
+if  (message.content.startsWith(config.prefix + "help update")) {
+  message.channel.send("this will show you what got update in the past hours or days")
+} else 
+if (message.content.startsWith(config.prefix + "help pat")) {
+
+     message.channel.send("this will pat someone but dont forgett to mention him");
+} else
+if (message.content.startsWith(config.prefix + "help butts")) {
+
+  message.channel.send("this will give a nice anime ass gif")
+} else
+if (message.content.startsWith(config.prefix + "help kiss")) {
+
+     message.channel.send("this will kiss someone but dont forgett to mention him");
+} else
+if (message.content.startsWith(config.prefix + "help slap")) {   
+
+  message.channel.send("this will slap if you dont like him/her or he/she was mean but dont forgett to mention him");
+} else
+
+if (message.content.startsWith(config.prefix + "help lewd")) {
+
+  message.channel.send("ill give you a lewd pic but dont ask for more :p ")
+} else
+
+if (message.content.startsWith(config.prefix + "help life")) {
+
+  message.channel.send("you can see here how my life is right now")
+} else
+
+if (message.content.startsWith(config.prefix + "help fuck")) {
+
+  message.channel.send("you can fuck someone if you want :shrug: ")
+}
+if (message.content.startsWith(config.prefix + "help kill")) {
+
+  message.channel.send("you can kill someone if you want")
+}
+if (message.content.startsWith(config.prefix + "help dickslap")) {
+
+  message.channel.send("you can dickslap someone if you want")
+}
+if (message.content.startsWith(config.prefix + "help rape")) {
+
+  message.channel.send("you can actually rape someone isnt that great?")
+}
+
 });
 //Message.Reply
 
@@ -313,4 +447,32 @@ client.on ("message", (message) => {
     }
 
 }); 
-client.login(process.env.BOT_TOKEN);
+
+//eval code
+function clean(text) {
+  if (typeof(text) === "string")
+    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+  else
+      return text;
+}
+
+//eval command 
+client.on("message", message => {
+  const args = message.content.split(" ").slice(1);
+
+  if (message.content.startsWith(config.prefix + "eval")) {
+    if(message.author.id !== config.ownerID) return;
+    try {
+      const code = args.join(" ");
+      let evaled = eval(code);
+
+      if (typeof evaled !== "string")
+        evaled = require("util").inspect(evaled);
+
+      message.channel.send(clean(evaled), {code:"xl"});
+    } catch (err) {
+      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+    }
+  }
+});
+client.login(process.env.SECRET);
