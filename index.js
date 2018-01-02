@@ -1,7 +1,18 @@
+const http = require('http');
+const express = require('express');
+const app = express();
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
+
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config.json");
-const package = require("./package.json");
 const image = require("./image.json")
 const updates = require("./updates.json")
 
@@ -17,7 +28,7 @@ client.on("ready", () => {
 
 // Set the bot's online/idle/dnd/invisible status
 client.on("ready", () => {
-    client.user.setStatus("dnd");
+    client.user.setStatus("online");
 });
 
 client.on("guildCreate", guild => {
@@ -72,7 +83,7 @@ client.on("message", async message => {
     // This command must be limited to mods and admins. In this example we just hardcode the role names.
     // Please read on Array.some() to understand this bit: 
     // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
-    if(!message.member.roles.some(r=>["Administrator", "Moderator"].includes(r.name)) )
+    if(!message.member.roles.some(r=>["Administrator", "Moderator", "Mod", "Admin", "Head Admin"].includes(r.name)) )
       return message.reply("Sorry, you don't have permissions to use this!");
     
     // Let's first check if we have a member and if we can kick them!
@@ -98,7 +109,7 @@ client.on("message", async message => {
   if(command === "ban") {
     // Most of this command is identical to kick, except that here we'll only let admins do it.
     // In the real world mods could ban too, but this is just an example, right? ;)
-    if(!message.member.roles.some(r=>["Administrator"].includes(r.name)) )
+    if(!message.member.roles.some(r=>["Administrator", "Moderator", "Mod", "Admin", "Head Admin"].includes(r.name)) )
       return message.reply("Sorry, you don't have permissions to use this!");
     
     let member = message.mentions.members.first();
@@ -194,13 +205,13 @@ client.on("message", (message) => {
   if (!message.content.startsWith(config.prefix) || message.author.bot) return;
 
   if (message.content.startsWith(config.prefix + "helpah")) {
-    message.channel.send(`This is fun bot and not more bot.More options will be added soon.Type "!!commands" for the commands with prefix, be sure to check "!!update"`);
+    message.channel.send(`This is fun bot and not more.More options will be added soon.Type "!!commands" for the commands with prefix, be sure to check "!!update"`);
   } else
   if (message.content.startsWith(config.prefix + "inv")) {
     message.channel.send("My invite linke so you can add me on your server :heart: https://discordapp.com/oauth2/authorize?client_id=393920096860635136&scope=bot&permissions=1 .My invite linke to my server :purple_heart:  https://discord.gg/f3cdMz5");
   } else
   if (message.content.startsWith(config.prefix + "commands")) {
-    message.channel.send("Commands with prefix:help,report,inv,ping,say,kick,ban,purge,guilds,pat,kiss,slap,butts,lewd,fuck,life,kill");
+    message.channel.send("Commands with prefix:help,report,inv,ping,say,kick,ban,purge,guilds,pat,kiss,slap,butts,lewd,fuck,life,kill,hug,cuddle");
   } else
     if (message.content.startsWith(config.prefix + "guilds")) {
       message.channel.send(`The bot sees ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`);
@@ -218,7 +229,25 @@ client.on("message", (message) => {
       return message.reply("you cant pat yourself do you?(please mention someone)");
      
 
-       message.channel.send(config.pat +  member.user.tag + image.pat);
+       return message.reply(config.pat +  member.user.tag + image.pat);
+  }
+  if (message.content.startsWith(config.prefix + "hug")) {
+  
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant hug yourself do you?(please mention someone)");
+     
+
+       return message.reply(config.hug +  member.user.tag + image.hug);
+  }
+  if (message.content.startsWith(config.prefix + "cuddle")) {
+  
+    let member = message.mentions.members.first();
+    if(!member)
+      return message.reply("you cant cuddle yourself do you?(please mention someone)");
+     
+
+       return message.reply(config.cuddle +  member.user.tag + image.cuddle);
   }
   if (message.content.startsWith(config.prefix + "butts")) {
 
@@ -475,4 +504,4 @@ client.on("message", message => {
     }
   }
 });
-client.login(process.env.SECRET);
+client.login(process.env.TOKEN);
